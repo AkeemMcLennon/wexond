@@ -1,6 +1,6 @@
 {
   "appId": "org.wexond.wexond",
-  "productName": "Wexond",
+  "productName": "ButterflyFX",
 
   "nsis": {
     "include": "static/installer.nsh"
