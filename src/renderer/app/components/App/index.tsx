@@ -8,7 +8,7 @@ import { ipcRenderer } from 'electron';
 import { Line, StyledApp } from './style';
 import { WindowsButtons } from '../WindowsButtons';
 import { platform } from 'os';
-import { Overlay } from '../Overlay';
+import { Overlay } from '~/butterflyfx/components/Overlay';
 import store from '../../store';
 
 const GlobalStyle = createGlobalStyle`${Style}`;
