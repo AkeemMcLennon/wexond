@@ -34,6 +34,9 @@ export class Store {
   public theme = lightTheme;
 
   @observable
+  public isAlwaysOnTop = false;
+
+  @observable
   public isFullscreen = false;
 
   @observable
@@ -54,6 +57,8 @@ export class Store {
   @observable
   public settings: Settings = {
     dialType: 'top-sites',
+    isDarkTheme: false,
+    isShieldToggled: true,
   };
 
   public findInputRef = React.createRef<HTMLInputElement>();
@@ -155,9 +160,15 @@ export class Store {
       ...this.settings,
       ...JSON.parse(readFileSync(getPath('settings.json'), 'utf8')),
     };
+
+    this.theme = this.settings.isDarkTheme ? darkTheme : lightTheme;
+
+    ipcRenderer.send('settings', this.settings);
   }
 
   public saveSettings() {
+    ipcRenderer.send('settings', this.settings);
+
     writeFile(getPath('settings.json'), JSON.stringify(this.settings), err => {
       if (err) console.error(err);
     });

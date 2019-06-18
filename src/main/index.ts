@@ -21,10 +21,16 @@ ipcMain.setMaxListeners(0);
 
 export let appWindow: AppWindow;
 
+export let settings: Settings = {};
+
+ipcMain.on('settings', (e: any, s: Settings) => {
+  settings = { ...settings, ...s };
+});
+
 registerProtocols();
 
-app.setAsDefaultProtocolClient('http');
-app.setAsDefaultProtocolClient('https');
+// app.setAsDefaultProtocolClient('http');
+// app.setAsDefaultProtocolClient('https');
 
 const gotTheLock = app.requestSingleInstanceLock();
 
@@ -61,6 +67,8 @@ app.on('ready', () => {
       getPath('settings.json'),
       JSON.stringify({
         dialType: 'top-sites',
+        isDarkTheme: false,
+        isShieldToggled: true,
       } as Settings),
     );
   }

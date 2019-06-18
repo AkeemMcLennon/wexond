@@ -377,9 +377,9 @@ export class Tab {
     const tabGroup = this.tabGroup;
     const { tabs } = tabGroup;
 
-    const selected = tabGroup.selectedTabId === this.id;
+    store.tabs.closedUrl = this.url;
 
-    store.tabs.removedTabs++;
+    const selected = tabGroup.selectedTabId === this.id;
 
     if (this.isWindow) {
       ipcRenderer.send('detach-window', this.id);
@@ -399,6 +399,8 @@ export class Tab {
         this.setLeft(previousTab.getLeft(true) + this.getWidth(), true);
       }
       store.tabs.updateTabsBounds(true);
+    } else {
+      store.tabs.removedTabs++;
     }
 
     this.setWidth(0, true);
@@ -417,14 +419,12 @@ export class Tab {
       } else if (index - 1 >= 0 && !tabs[index - 1].isClosing) {
         const prevTab = tabs[index - 1];
         prevTab.select();
-      } else if (store.tabGroups.list.length === 1) {
-        if (this.isWindow) {
-          store.overlay.visible = true;
-          store.overlay.isNewTab = true;
-        }
-      } else if (this.tabGroup.tabs.length === 0) {
-        store.overlay.visible = true;
       }
+    }
+
+    if (this.tabGroup.tabs.length === 1) {
+      store.overlay.isNewTab = true;
+      store.overlay.visible = true;
     }
 
     this.removeTimeout = setTimeout(() => {

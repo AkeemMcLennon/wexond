@@ -59,6 +59,7 @@ export const StyledTab = styled.div`
   align-items: center;
   will-change: width;
   -webkit-app-region: no-drag;
+
   ${({ selected, visible }: TabProps) => css`
     z-index: ${selected ? 2 : 1};
     display: ${visible ? 'flex' : 'none'};
@@ -134,7 +135,7 @@ export const StyledBorder = styled.div`
 
   ${({ visible, theme }: { visible: boolean; theme: Theme }) => css`
     visibility: ${visible ? 'visible' : 'hidden'};
-    background-color: ${theme['tab.separator.backgroundColor']};
+    background-color: ${theme['toolbar.separator.color']};
   `};
 `;
 

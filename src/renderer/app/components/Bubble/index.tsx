@@ -10,10 +10,10 @@ export const Bubble = ({
   children,
   icon,
   invert,
-  light,
   maxLines,
   iconSize,
   onClick,
+  toggled,
   itemsPerRow,
   disabled,
 }: {
@@ -21,11 +21,11 @@ export const Bubble = ({
   icon?: string;
   invert?: boolean;
   maxLines?: number;
-  light?: boolean;
   iconSize?: number;
   onClick?: (e?: React.MouseEvent<HTMLDivElement>) => void;
   itemsPerRow?: number;
   disabled?: boolean;
+  toggled?: boolean;
 }) => {
   const width = getSize(itemsPerRow);
 
@@ -35,9 +35,10 @@ export const Bubble = ({
       disabled={disabled}
       onClick={onClick}
     >
-      <Circle>
+      <Circle toggled={toggled}>
         <Icon
           invert={invert}
+          toggled={toggled}
           style={{
             backgroundImage: `url(${icon})`,
             backgroundSize: `${iconSize}px`,
