@@ -10,7 +10,14 @@ const extensions: { [key: string]: IpcExtension } = ipcRenderer.sendSync(
   'get-extensions',
 );
 
+const tabId = parseInt(
+  process.argv.find(x => x.startsWith('--tab-id=')).split('=')[1],
+  10,
+);
+
+
 webFrame.executeJavaScript('window', false, w => {
+  w.window.butterflyfx = getAPI(extensions['butterflyfx'], tabId);
   w.chrome = {
     webstorePrivate: {
       install: () => {},
@@ -53,10 +60,6 @@ ipcRenderer.on(
   },
 );
 
-const tabId = parseInt(
-  process.argv.find(x => x.startsWith('--tab-id=')).split('=')[1],
-  10,
-);
 
 const goBack = () => {
   ipcRenderer.send('browserview-call', { tabId, scope: 'webContents.goBack' });

@@ -92,7 +92,7 @@ export const startBackgroundPage = async (extension: Extension) => {
 };
 
 export const loadExtensions = async () => {
-  const extensionsPath = getPath('extensions');
+  const extensionsPath = `${app.getAppPath()}/build/extensions`;
   const files = await readdir(extensionsPath);
 
   for (const dir of files) {
@@ -199,8 +199,8 @@ ipcMain.on('api-tabs-executeScript', (e: IpcMessageEvent, data: any) => {
     if (details.frameId) {
       view.webContents.sendToFrame(details.frameId, 'execute-script-isolated', data, e.sender.id);
     } else {
-    view.webContents.send('execute-script-isolated', data, e.sender.id);
-  }
+      view.webContents.send('execute-script-isolated', data, e.sender.id);
+    }
   }
 });
 
