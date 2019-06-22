@@ -1,5 +1,5 @@
 {
-  "appId": "org.wexond.wexond",
+  "appId": "io.butterflyfx.desktop",
   "productName": "ButterflyFX",
 
   "nsis": {
@@ -12,7 +12,12 @@
     "buildResources": "static/app-icons"
   },
   "files": ["build/**/*", "package.json"],
-  "publish": "github",
+  "publish": [
+    {
+      "provider": "generic",
+      "url": "https://updates.butterflyfx.io/"
+    }
+  ],
   "linux": {
     "category": "Network",
     "target": [
