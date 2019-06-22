@@ -29,7 +29,7 @@ export class API {
     this._extension = extension;
 
     this.runtime = new Runtime(this, tabId);
-    this.webNavigation = new WebNavigation();
+    this.webNavigation = new WebNavigation(this);
     this.alarms = new Alarms(this);
     this.storage = new Storage(this);
     this.extension = new Extension();

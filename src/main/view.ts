@@ -4,17 +4,26 @@ import { sendToAllExtensions } from './extensions';
 import { engine, isShieldToggled } from './services/web-request';
 import { parse } from 'tldts';
 
+class Frame{
+  url: string;
+  processId: number;
+  frameId: number;
+  parentFrameId: number;
+}
+
 export class View extends BrowserView {
   public title: string = '';
   public url: string = '';
   public tabId: number;
   public homeUrl: string;
+  public frames: Frame[] = [];
 
   constructor(id: number, url: string) {
     super({
       webPreferences: {
         preload: `${app.getAppPath()}/build/view-preload.js`,
         nodeIntegration: false,
+        nodeIntegrationInSubFrames: true,
         additionalArguments: [`--tab-id=${id}`],
         contextIsolation: true,
         partition: 'persist:view',
@@ -189,13 +198,29 @@ export class View extends BrowserView {
       appWindow.webContents.send('found-in-page', result);
     });
 
-    this.webContents.addListener('did-stop-loading', () => {
+    this.webContents.addListener('did-frame-navigate', (e, url, httpResponseCode, httpStatusText, isMainFrame, frameProcessId, frameRoutingId) => {
+      const frame:Frame = {
+        frameId: isMainFrame ? 0 : frameRoutingId,
+        processId: frameProcessId,
+        url,
+        parentFrameId: isMainFrame ? -1 : 0,
+      }
+      this.frames.push(frame);
+    });
+
+    this.webContents.addListener('did-frame-finish-load', (e, isMainFrame, frameProcessId, frameRoutingId) => {
+      if (!isMainFrame) {
+        return;
+      }
       this.updateNavigationState();
       appWindow.webContents.send(`view-loading-${this.tabId}`, false);
     });
 
     this.webContents.addListener('did-start-loading', () => {
       this.updateNavigationState();
+      if (!process.isMainFrame) {
+        return;
+      }
       appWindow.webContents.send(`view-loading-${this.tabId}`, true);
     });
 

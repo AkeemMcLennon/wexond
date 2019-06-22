@@ -192,11 +192,15 @@ ipcMain.on(
 );
 
 ipcMain.on('api-tabs-executeScript', (e: IpcMessageEvent, data: any) => {
-  const { tabId } = data;
+  const { tabId, details } = data;
   const view = appWindow.viewManager.views[tabId];
 
   if (view) {
+    if (details.frameId) {
+      view.webContents.sendToFrame(details.frameId, 'execute-script-isolated', data, e.sender.id);
+    } else {
     view.webContents.send('execute-script-isolated', data, e.sender.id);
+  }
   }
 });
 
@@ -236,9 +240,17 @@ ipcMain.on('api-runtime-sendMessage', async (e: IpcMessageEvent, data: any) => {
     const view = webContents.fromId(backgroundPage.webContentsId);
 
     if (view) {
-      view.send('api-runtime-sendMessage', data, e.sender.id);
+      view.send('api-runtime-sendMessage', data, e.sender.id, e.frameId);
     }
   }
+});
+
+ipcMain.on('api-webnavigation-getallframes', async (e: IpcMessageEvent, data: any) => {
+  const { tabId, portId } = data;
+
+  const view  = appWindow.viewManager.views[tabId];
+
+  e.sender.send(`api-webnavigation-getallframes-${portId}`, view.frames);
 });
 
 ipcMain.on(

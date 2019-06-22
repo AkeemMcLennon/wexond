@@ -16,13 +16,13 @@ export const getAPI = (extension: IpcExtension, tabId: number = null) => {
 
   ipcRenderer.on(
     'api-runtime-sendMessage',
-    (e: Electron.IpcMessageEvent, data: any, webContentsId: number) => {
+    (e: Electron.IpcMessageEvent, data: any, webContentsId: number, frameId: number) => {
       const { portId, sender, message } = data;
 
       const sendResponse = (msg: any) => {
         remote.webContents
           .fromId(webContentsId)
-          .send(`api-runtime-sendMessage-response-${portId}`, msg);
+          .sendToFrame(frameId, `api-runtime-sendMessage-response-${portId}`, msg);
       };
 
       api.runtime.onMessage.emit(message, sender, sendResponse);
